@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: k3s-demo
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k3s-demo
+  template:
+    metadata:
+      labels:
+        app: k3s-demo
+    spec:
+      containers:
+      - name: k3s-demo
+        image: ruanbekker/rpi-hostname:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k3s-demo
+  namespace: default
+spec:
+  ports:
+  - name: http
+    targetPort: 8000
+    port: 80
+  selector:
+    app: k3s-demo
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: k3s-demo
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+
+spec:
+  rules:
+  - host: k3s-demo.example.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: k3s-demo
+          servicePort: http
