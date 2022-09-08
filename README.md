@@ -38,7 +38,17 @@ Push the image to your image repository of choice
 $ docker push ruanbekker/rpi-hostname
 ```
 
+From the configuration above we are using Traefik for our ingress and mapping port 80 to the k3s-demo service via the dns name k3s-demo.example.org
+
+As I do not own example.org, I will be setting that in my /etc/hosts file:
+
+``` bash
+$ cat /etc/hosts | grep k3s
+192.168.0.100 k3s-demo.example.org
+```
+
 Deploy our application:
+
 ``` bash
 $ kubectl apply -f k3s-demo.yml
 deployment.extensions/k3s-demo created
@@ -47,6 +57,7 @@ ingress.extensions/k3s-demo created
 ```
 
 After a minute or so, have a look at the services:
+
 ``` bash
 $ kubectl get service
 NAMESPACE     NAME         TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
@@ -54,6 +65,7 @@ default       k3s-demo     ClusterIP      10.43.89.51    <none>          80/TCP 
 ```
 
 The deployments:
+
 ``` bash
 $ kubectl get deployments
 NAMESPACE     NAME       READY   UP-TO-DATE   AVAILABLE   AGE
@@ -61,6 +73,7 @@ default       k3s-demo   1/1     1            1           42s
 ```
 
 And get the pods:
+
 ``` bash
 $ kubectl get pods
 NAME                        READY   STATUS    RESTARTS   AGE
